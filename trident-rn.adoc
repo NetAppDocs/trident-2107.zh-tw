@@ -1,0 +1,86 @@
+---
+sidebar: sidebar 
+permalink: trident-rn.html 
+keywords: 'what"s new, new features, enhancements, known issues, resolved issues, troubleshooting' 
+summary: NetApp持續改善及強化其產品與服務。以下是最新版Astra Trident的一些最新功能、增強功能及錯誤修正。 
+---
+= 版本資訊
+:hardbreaks:
+:allow-uri-read: 
+:icons: font
+:imagesdir: ../media/
+
+
+版本資訊提供最新版Astra Trident的新功能、增強功能及錯誤修正資訊。
+
+
+WARNING: 。 `tridentctl` 安裝程式壓縮檔中提供的Linux二進位檔是經過測試且受支援的版本。請注意 `macos` 中提供的二進位元 `/extras` 未測試或支援部分的Zip檔案。
+
+
+
+== 新功能
+
+NetApp持續改善及強化其產品與服務。以下是Astra Trident提供的一些最新功能。
+
+
+
+=== Astra Trident 21.07.02
+
+* 修正XFS磁碟區的複本無法與來源磁碟區掛載在同一個節點上的問題。
+
+
+
+
+==== 增強功能
+
+* 新增對Kubernetes 1.22的支援。
+* 讓Trident運算子和Helm圖表能與Kubernetes 1.22搭配使用。
+
+
+請參閱 https://github.com/NetApp/trident/releases["Astra Trident GitHub"^] 以取得更多資訊。
+
+
+
+=== Astra Trident 21.07.01
+
+* 修正不同映像的自訂Y反 洗錢安裝程式問題。
+* 修正快照大小計算問題。
+
+
+請參閱 https://github.com/NetApp/trident/releases/tag/v21.07.1["Astra Trident GitHub"^] 以取得更多資訊。
+
+
+
+=== Astra Trident 21.07
+
+Astra Trident 21.07.0 *無法下載*。的變更 `snapshotReserve` 使用版本21.07.0可能會產生csi `VolumeSnapshots` 無法建立PersistentVolume Claim。
+
+如果您已升級至版本21.07.0、建議您刪除新建立的 `VolumeSnapshots` （隨21.07.0版配置）並降級至先前版本。
+
+請參閱 https://github.com/NetApp/trident/releases/tag/v21.07.0["Astra Trident GitHub"^] 以取得更多資訊。
+
+
+
+== 已知問題
+
+已知問題可識別可能導致您無法成功使用產品的問題。
+
+* Astra Trident現在強制執行空白 `fsType` (`fsType=""`） `fsType` 在其StorageClass中指定。使用Kubernetes 1.17或更新版本時、Trident支援提供空白 `fsType` 適用於NFS磁碟區。對於iSCSI磁碟區、您必須設定 `fsType` 在StorageClass上執行 `fsGroup` 使用安全性內容。
+* 在多個Astra Trident執行個體之間使用後端時、每個後端組態檔都應有不同的組態檔 `storagePrefix` 價值用於不一樣的後端或使用不同的ONTAP `TenantName` 用於SolidFire 後端。Astra Trident無法偵測其他Astra Trident執行個體所建立的磁碟區。嘗試在ONTAP 不穩定或SolidFire 不穩定的後端上建立現有的Volume是成功的、因為Astra Trident將建立Volume視為強大的作業。如果 `storagePrefix` 或 `TenantName` 別有不同、在相同後端上建立的磁碟區可能會發生名稱衝突。
+* 安裝Astra Trident時（使用 `tridentctl` 或Trident運算子）和使用 `tridentctl` 若要管理Astra Trident、您應確保 `KUBECONFIG` 環境變數已設定。這是表示Kubernetes叢集的必要資訊 `tridentctl` 應該與之合作。在使用多個Kubernetes環境時、您應確保 `KUBECONFIG` 檔案來源正確。
+* 若要執行iSCSI PV的線上空間回收、工作節點上的基礎作業系統可能需要將掛載選項傳遞至磁碟區。這適用於需要的RHEL/RedHat CoreOS執行個體 `discard` https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/managing_file_systems/discarding-unused-blocks_managing-file-systems["掛載選項"^]；請確定您的隨附了捨棄掛載選項[`StorageClass`支援線上區塊捨棄。
+* 如果每個Kubernetes叢集有一個以上的Astra Trident執行個體、Astra Trident就無法與其他執行個體通訊、也無法探索他們所建立的其他磁碟區、如果叢集內有多個執行個體執行、就會導致非預期和不正確的行為。每個Kubernetes叢集只應有一個Astra Trident執行個體。
+* 如果是Astra Trident型 `StorageClass` 當Astra Trident離線時、會從Kubernetes刪除物件、當Astra Trident重新上線時、不會從資料庫中移除對應的儲存類別。您應該使用刪除這些儲存類別 `tridentctl` 或REST API。
+* 如果使用者刪除由Astra Trident提供的PV、然後再刪除對應的PVC、則Astra Trident不會自動刪除備份Volume。您應該透過移除Volume `tridentctl` 或REST API。
+* 除非集合體是每個資源配置要求的唯一集合體、否則無法同時配置多個支援區。ONTAP FlexGroup
+* 使用Astra Trident over IPv6時、您應該指定 `managementLIF` 和 `dataLIF` 在後端定義的方括弧內。例如、 ``[fd20:8b1e:b258:2000:f816:3eff:feec:0]``。
+* 如果使用 `solidfire-san` 使用OpenShift 4.5的驅動程式、請確保基礎工作者節點使用MD5做為CHAP驗證演算法。
+
+
+
+
+== 如需詳細資訊、請參閱
+
+* https://github.com/NetApp/trident["Astra Trident GitHub"^]
+* https://netapp.io/persistent-storage-provisioner-for-kubernetes/["Astra Trident部落格"^]
+

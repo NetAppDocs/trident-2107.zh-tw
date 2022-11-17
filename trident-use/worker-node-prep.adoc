@@ -1,0 +1,138 @@
+---
+sidebar: sidebar 
+permalink: trident-use/worker-node-prep.html 
+keywords: storage class, manage storage class, storage classes, kubernetes storage classes, worker node, nfs, iscsi, kubernetes clusters 
+summary: Kubernetes叢集中的所有工作節點都必須能夠掛載您已為Pod配置的磁碟區。如果您使用的是其中一個後端的ONTAP-NAS、ONTAP-NAS-節約、ONTAP-NAS-Flexgroup驅動程式、則您的工作節點需要NFS工具。否則他們需要iSCSI工具。 
+---
+= 準備工作節點
+:hardbreaks:
+:allow-uri-read: 
+:icons: font
+:imagesdir: ../media/
+
+
+Kubernetes叢集中的所有工作節點都必須能夠掛載您已為Pod配置的磁碟區。如果您使用的是 `ontap-nas`、 `ontap-nas-economy`或 `ontap-nas-flexgroup` 您的其中一個後端的驅動程式、您的工作節點需要NFS工具。否則他們需要iSCSI工具。
+
+最新版本的RedHat CoreOS預設會同時安裝NFS和iSCSI。
+
+
+WARNING: 安裝NFS或iSCSI工具之後、您應該一律重新啟動工作節點、否則將磁碟區附加至容器可能會失敗。
+
+
+
+== NFS磁碟區
+
+[cols="3*"]
+|===
+| 傳輸協定 | 作業系統 | 命令 
+
+
+| NFS  a| 
+RHEL/CentOS
+ a| 
+`sudo yum install -y nfs-utils`
+
+
+
+| NFS  a| 
+Ubuntu / DEBIAN
+ a| 
+`sudo apt-get install -y nfs-common`
+
+|===
+
+NOTE: 您應確保NFS服務在開機期間啟動。
+
+
+
+== iSCSI磁碟區
+
+使用iSCSI磁碟區時、請考量下列事項：
+
+* Kubernetes叢集中的每個節點都必須具有唯一的IQN。*這是必要的先決條件*。
+* 若搭配使用RMCOS 4.5或更新版本、或RHEL或CentOS 8.2或更新版本 `solidfire-san` 驅動程式、請確定CHAP驗證演算法已在中設定為MD5 `/etc/iscsi/iscsid.conf`。
+
+
+[listing]
+----
+sudo sed -i 's/^\(node.session.auth.chap_algs\).*/\1 = MD5/' /etc/iscsi/iscsid.conf
+----
+* 使用執行RHEL/RedHat CoreOS搭配iSCSI PV的工作節點時、請務必指定 `discard` StorageClass中的掛載選項、以執行即時空間回收。請參閱 https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/managing_file_systems/discarding-unused-blocks_managing-file-systems["RedHat的文件"^]。
+
+
+[cols="3*"]
+|===
+| 傳輸協定 | 作業系統 | 命令 
+
+
+| iSCSI  a| 
+RHEL/CentOS
+ a| 
+. 安裝下列系統套件：
++
+`sudo yum install -y lsscsi iscsi-initiator-utils sg3_utils device-mapper-multipath`
+
+. 檢查iscsite-initier-utils版本是否為6.6.0.874-2.el7或更新版本：
++
+`rpm -q iscsi-initiator-utils`
+
+. 將掃描設為手動：
++
+`sudo sed -i 's/^\(node.session.scan\).*/\1 = manual/' /etc/iscsi/iscsid.conf`
+
+. 啟用多重路徑：
++
+`sudo mpathconf --enable --with_multipathd y`
+
+. 請確保如此 `iscsid` 和 `multipathd` 執行中：
++
+`sudo systemctl enable --now iscsid multipathd`
+
+. 啟用並啟動 `iscsi`：
++
+`sudo systemctl enable --now iscsi`
+
+
+
+
+
+| iSCSI  a| 
+Ubuntu / DEBIAN
+ a| 
+. 安裝下列系統套件：
++
+`sudo apt-get install -y open-iscsi lsscsi sg3-utils multipath-tools scsitools`
+
+. 檢查開放式iSCSI版本是否為2.0.874-5ubuntu2．10或更新版本（適用於雙聲網路）或2.0.874-7.1ubuntu6.1或更新版本（適用於焦點）：
++
+`dpkg -l open-iscsi`
+
+. 將掃描設為手動：
++
+`sudo sed -i 's/^\(node.session.scan\).*/\1 = manual/' /etc/iscsi/iscsid.conf`
+
+. 啟用多重路徑：
++
+`sudo tee /etc/multipath.conf <<-'EOF'
+defaults {
+    user_friendly_names yes
+    find_multipaths yes
+}
+EOF
+sudo systemctl enable --now multipath-tools.service
+sudo service multipath-tools restart`
+
+. 請確保如此 `open-iscsi` 和 `multipath-tools` 已啟用並執行：
++
+`sudo systemctl status multipath-tools`
+`sudo systemctl enable --now open-iscsi.service`
+`sudo systemctl status open-iscsi`
+
+
+
+|===
+
+NOTE: 若為Ubuntu 18.04、您必須使用探索目標連接埠 `iscsiadm` 開始之前 `open-iscsi` 以啟動iSCSI精靈。您也可以修改 `iscsi` 服務開始 `iscsid` 自動：
+
+
+NOTE: 如果您想要深入瞭解自動工作節點準備（這是試用版功能）、請參閱 link:automatic-workernode.html["請按這裡"^]。
