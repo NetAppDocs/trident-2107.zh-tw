@@ -18,7 +18,7 @@ WARNING: 。 `tridentctl` 安裝程式壓縮檔中提供的Linux二進位檔是�
 
 
 
-== 新功能
+== 新增功能
 
 NetApp持續改善及強化其產品與服務。以下是Astra Trident提供的一些最新功能。
 

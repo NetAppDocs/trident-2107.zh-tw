@@ -35,7 +35,7 @@ TIP: 如需進一步瞭解Kubernetes物件、我們強烈建議您閱讀 https:/
 
 
 
-== Kubernetes PeristentVolume Claim物件
+== Kubernetes `PersistentVolumeClaim` 物件
 
 Kubernetes `PersistentVolumeClaim` 物件是Kubernetes叢集使用者所提出的儲存要求。
 
@@ -97,7 +97,7 @@ NOTE: 您可以使用 `cloneFromPVC` 和 `splitOnClone` 附有「csi Trident」�
 
 
 
-== Kubernetes PersistentVolume物件
+== Kubernetes `PersistentVolume` 物件
 
 Kubernetes `PersistentVolume` 物件代表Kubernetes叢集可用的一部分儲存設備。它的生命週期與使用它的Pod無關。
 
@@ -112,7 +112,7 @@ NOTE: Trident會建立 `PersistentVolume` 根據資源配置的磁碟區、自�
 
 
 
-== Kubernetes StorageClass物件
+== Kubernetes `StorageClass` 物件
 
 Kubernetes `StorageClass` 物件是以中的名稱來指定 `PersistentVolumeClaims` 以一組內容來配置儲存設備。儲存類別本身會識別要使用的資源配置程式、並根據資源配置程式所瞭解的方式來定義該組內容。
 
@@ -219,7 +219,7 @@ Trident安裝程式套件提供數個範例儲存類別定義、可與中的Trid
 
 
 
-== Kubernetes Volume SnapshotClass物件
+== Kubernetes `VolumeSnapshotClass` 物件
 
 Kubernetes `VolumeSnapshotClass` 物件類似 `StorageClasses`。它們有助於定義多種儲存類別、並由Volume Snapshot參考、以將快照與所需的Snapshot類別建立關聯。每個Volume Snapshot都與單一Volume Snapshot類別相關聯。
 
@@ -238,7 +238,7 @@ deletionPolicy: Delete
 
 
 
-== Kubernetes Volume Snapshot物件
+== Kubernetes `VolumeSnapshot` 物件
 
 Kubernetes `VolumeSnapshot` 物件是建立磁碟區快照的要求。就像使用者針對磁碟區所提出的要求一樣、磁碟區快照是使用者建立現有虛擬磁碟快照的要求。
 
@@ -250,7 +250,7 @@ NOTE: Volume Snapshot的生命週期與來源PVCs無關：即使刪除來源PVCs
 
 
 
-== Kubernetes Volume SnapshotContent物件
+== Kubernetes `VolumeSnapshotContent` 物件
 
 Kubernetes `VolumeSnapshotContent` 物件代表從已配置的磁碟區擷取的快照。類似於 `PersistentVolume` 並表示儲存叢集上已配置的快照。類似 `PersistentVolumeClaim` 和 `PersistentVolume` 建立快照時的物件 `VolumeSnapshotContent` 物件會將一對一的對應維持在上 `VolumeSnapshot` 物件、要求建立快照。
 
@@ -263,7 +263,7 @@ NOTE: Trident會建立 `VolumeSnapshotContent` 根據資源配置的磁碟區、
 
 
 
-== Kubernetes Custom資源 定義物件
+== Kubernetes `CustomResourceDefinition` 物件
 
 Kubernetes自訂資源是Kubernetes API中由系統管理員定義的端點、用於將類似物件分組。Kubernetes支援建立自訂資源來儲存物件集合。您可以執行來取得這些資源定義 `kubectl get crds`。
 
@@ -282,7 +282,7 @@ CRD是Kubernetes建構。上述資源的物件是由Trident所建立。例如、
 
 
 
-== Trident StorageClass物件
+== Trident `StorageClass` 物件
 
 Trident為Kubernetes建立相符的儲存類別 `StorageClass` 指定的物件 `csi.trident.netapp.io`/`netapp.io/trident` 在他們的資源配置工具欄位中。儲存類別名稱與Kubernetes名稱相符 `StorageClass` 所代表的物件。
 
@@ -306,7 +306,7 @@ NOTE: 這是您自己建立和管理的兩種物件類型之一。另一個是Ku
 
 
 
-== Trident StoragePool物件
+== Trident `StoragePool` 物件
 
 儲存資源池代表可在每個後端上進行資源配置的不同位置。就支援而言ONTAP 、這些項目對應於SVM中的集合體。對於NetApp HCI / SolidFire、這些服務會對應到系統管理員指定的QoS頻段。就架構而言、這些項目對應於雲端供應商所在的地區。Cloud Volumes Service每個儲存資源池都有一組獨特的儲存屬性、可定義其效能特性和資料保護特性。
 
@@ -314,7 +314,7 @@ NOTE: 這是您自己建立和管理的兩種物件類型之一。另一個是Ku
 
 
 
-== Trident Volume物件
+== Trident `Volume` 物件
 
 Volume是資源配置的基本單位、包含NFS共用和iSCSI LUN等後端端點。在Kubernetes中、這些項目會直接對應至 `PersistentVolumes`。建立磁碟區時、請確定它有一個儲存類別、決定該磁碟區可以配置的位置及大小。
 
@@ -381,7 +381,7 @@ Trident會產生 `internalName` 建立Volume時。這包括兩個步驟。首先
 
 
 
-== Trident Snapshot物件
+== Trident `Snapshot` 物件
 
 快照是磁碟區的時間點複本、可用來配置新的磁碟區或還原狀態。在Kubernetes中、這些項目會直接對應至 `VolumeSnapshotContent` 物件：每個快照都與一個Volume相關聯、該磁碟區是快照資料的來源。
 
