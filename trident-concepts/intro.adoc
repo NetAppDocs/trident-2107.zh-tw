@@ -2,7 +2,7 @@
 sidebar: sidebar 
 permalink: trident-concepts/intro.html 
 keywords: product overview, astra trident 
-summary: Astra Trident的資源配置有兩個主要階段。第一階段會將儲存類別與一組適當的後端儲存資源池建立關聯、並在進行資源配置之前做好必要準備。第二階段包括磁碟區建立本身、並要求從與擱置磁碟區儲存類別相關的儲存資源池中選擇儲存資源池。 
+summary: Astra Trident的資源配置有兩個主要階段。第一階段會將儲存類別與一組適當的後端儲存資源池建立關聯、並在進行資源配置之前做好必要準備。第二階段包括磁碟區建立本身、需要從與擱置磁碟區的儲存類別相關的儲存池中選擇儲存池。 
 ---
 = Astra Trident簡介
 :hardbreaks:
@@ -11,9 +11,10 @@ summary: Astra Trident的資源配置有兩個主要階段。第一階段會將�
 :imagesdir: ../media/
 
 
-Astra Trident是由NetApp維護的完全支援開放原始碼專案。這套解決方案的設計完全是為了協助您使用業界標準介面（例如Container Storage介面（SCSI））來滿足容器化應用程式的持續需求。
+[role="lead"]
+Astra Trident 是由 NetApp 維護的完全支援開放原始碼專案、是的一部分 link:https://docs.netapp.com/us-en/astra-family/intro-family.html["Astra產品系列"^]。其設計旨在協助您使用業界標準介面（例如 Container Storage Interface （ CSI ））來滿足容器化應用程式的持續需求。
 
-Astra Trident將Kubernetes叢集部署為Pod、為Kubernetes工作負載提供動態儲存協調服務。它可讓您的容器化應用程式快速輕鬆地使用NetApp廣泛產品組合中的持續儲存設備、包括ONTAP ：VMware的各種產品組合（AFF/FAS/Select/Cloud / Amazon FSX for NetApp ONTAP ）、Element軟體（NetApp HCI / SolidFire）、Azure NetApp Files 以及支援VMware的服務、Cloud Volumes Service Google Cloud上的功能、Cloud Volumes Service 以及AWS上的功能。
+Astra Trident將Kubernetes叢集部署為Pod、為Kubernetes工作負載提供動態儲存協調服務。它可讓您的容器化應用程式快速輕鬆地使用 NetApp 廣泛產品組合中的持續儲存設備、包括 ONTAP （ AFF/FAS / Select / Cloud / Amazon FSX for NetApp ONTAP ）、 Element 軟體（ NetApp CI/SolidFire ）、以及 Azure NetApp Files 服務、 Google Cloud 上的 Cloud Volumes Service 、以及 AWS 上的 Cloud Volumes Service 。
 
 Astra Trident也是NetApp Astra的一項基礎技術、運用NetApp領先業界的資料管理技術、提供快照、備份、複寫及複製等快照、備份、複寫及複製功能、為Kubernetes工作負載提供資料保護、災難恢復、可攜性及移轉使用案例。
 
